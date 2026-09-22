@@ -1,163 +1,94 @@
 package com.quantumcore.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantumcore.entity.Product;
+import com.quantumcore.entity.Role;
+import com.quantumcore.entity.User;
 import com.quantumcore.repository.ProductRepository;
+import com.quantumcore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.List;
 
+/**
+ * DATABASE SEEDER
+ * 
+ * Automatically populates PostgreSQL on startup with:
+ * 1. Default Admin & Customer user accounts
+ * 2. Full catalog of 100+ Laptops, Desktops, Workstations, and Accessories from products.json
+ */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void run(String... args) {
-        if (productRepository.count() == 0) {
-            List<Product> seedProducts = Arrays.asList(
-                    Product.builder()
-                            .itemCode("MSI-GE78")
-                            .name("MSI Raider GE78 HX")
-                            .brand("MSI")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(1828200.0)
-                            .originalPrice(2050000.0)
-                            .discount("11% OFF")
-                            .specs("Intel i9-13980HX, 32GB DDR5, RTX 4090 16GB, 2TB NVMe SSD, 17\" QHD+ 240Hz")
-                            .image("/images/images.jpg")
-                            .badge("PRE ORDER")
-                            .stock(5)
-                            .rating(4.9)
-                            .reviewCount(14)
-                            .build(),
+        // 1. Seed default Admin & Customer accounts
+        if (!userRepository.existsByEmail("admin@quantumcore.com")) {
+            userRepository.save(User.builder()
+                    .name("Admin User")
+                    .email("admin@quantumcore.com")
+                    .password(passwordEncoder.encode("admin123"))
+                    .role(Role.ROLE_ADMIN)
+                    .build());
+            log.info("Seeded default admin user: admin@quantumcore.com");
+        }
 
-                    Product.builder()
-                            .itemCode("MSI-GE68")
-                            .name("MSI Raider GE68 HX")
-                            .brand("MSI")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(1966800.0)
-                            .originalPrice(2200000.0)
-                            .discount("11% OFF")
-                            .specs("Intel i9-13950HX, 32GB DDR5, RTX 4080 12GB, 2TB SSD, 16\" QHD+ 240Hz")
-                            .image("/images/blk_sitewide_400x400.webp")
-                            .badge("PRE ORDER")
-                            .stock(8)
-                            .rating(4.8)
-                            .reviewCount(9)
-                            .build(),
+        if (!userRepository.existsByEmail("pasindu@gmail.com")) {
+            userRepository.save(User.builder()
+                    .name("Pasindu")
+                    .email("pasindu@gmail.com")
+                    .password(passwordEncoder.encode("password123"))
+                    .role(Role.ROLE_ADMIN)
+                    .build());
+            log.info("Seeded admin user: pasindu@gmail.com");
+        }
 
-                    Product.builder()
-                            .itemCode("MSI-TITAN-18")
-                            .name("MSI Titan 18 HX AI")
-                            .brand("MSI")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(2557500.0)
-                            .originalPrice(2850000.0)
-                            .discount("10% OFF")
-                            .specs("Intel i9-14900HX, 64GB DDR5, RTX 4090 16GB, 4TB SSD, 18\" 4K Mini-LED 120Hz")
-                            .image("/images/images.jpg")
-                            .badge("FLAGSHIP")
-                            .stock(3)
-                            .rating(5.0)
-                            .reviewCount(6)
-                            .build(),
+        if (!userRepository.existsByEmail("customer@quantumcore.com")) {
+            userRepository.save(User.builder()
+                    .name("Demo Customer")
+                    .email("customer@quantumcore.com")
+                    .password(passwordEncoder.encode("customer123"))
+                    .role(Role.ROLE_CUSTOMER)
+                    .build());
+            log.info("Seeded default customer user: customer@quantumcore.com");
+        }
 
-                    Product.builder()
-                            .itemCode("ROG-G18")
-                            .name("ASUS ROG Strix G18")
-                            .brand("ASUS")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(1750000.0)
-                            .originalPrice(1950000.0)
-                            .discount("10% OFF")
-                            .specs("Intel i9-13980HX, 32GB DDR5, RTX 4070 Ti, 1TB NVMe, 18\" Nebula Display 240Hz")
-                            .image("/images/blk_sitewide_400x400.webp")
-                            .badge("NEW")
-                            .stock(12)
-                            .rating(4.7)
-                            .reviewCount(18)
-                            .build(),
-
-                    Product.builder()
-                            .itemCode("LEN-LEGION-9")
-                            .name("Lenovo Legion 9i Gen 8")
-                            .brand("Lenovo")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(2350000.0)
-                            .originalPrice(2600000.0)
-                            .discount("10% OFF")
-                            .specs("Intel i9-13980HX, 32GB DDR5, RTX 4090, 2TB SSD, Liquid Cooled Carbon Fiber")
-                            .image("/images/images (1).jpg")
-                            .badge("HOT")
-                            .stock(4)
-                            .rating(4.9)
-                            .reviewCount(11)
-                            .build(),
-
-                    Product.builder()
-                            .itemCode("HP-OMEN-16")
-                            .name("HP Omen 16 Gaming")
-                            .brand("HP")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(685000.0)
-                            .originalPrice(750000.0)
-                            .discount("9% OFF")
-                            .specs("AMD Ryzen 7 7840HS, 16GB DDR5, RTX 4060 8GB, 1TB SSD, 16.1\" 165Hz")
-                            .image("/images/images (2).jpg")
-                            .badge("SALE")
-                            .stock(7)
-                            .rating(4.6)
-                            .reviewCount(20)
-                            .build(),
-
-                    Product.builder()
-                            .itemCode("ACER-PRED-16")
-                            .name("Acer Predator Helios 16")
-                            .brand("Acer")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(745000.0)
-                            .originalPrice(820000.0)
-                            .discount("9% OFF")
-                            .specs("Intel i7-13700HX, 16GB DDR5, RTX 4070 8GB, 1TB SSD, 16\" WQXGA 240Hz")
-                            .image("/images/images (3).jpg")
-                            .badge("POPULAR")
-                            .stock(9)
-                            .rating(4.7)
-                            .reviewCount(15)
-                            .build(),
-
-                    Product.builder()
-                            .itemCode("MSI-CYBORG-15")
-                            .name("MSI Cyborg 15 A12V")
-                            .brand("MSI")
-                            .category("Laptops")
-                            .subCategory("Gaming Laptops")
-                            .price(425000.0)
-                            .originalPrice(465000.0)
-                            .discount("8% OFF")
-                            .specs("Intel i7-12650H, 16GB DDR5, RTX 4060 8GB, 512GB NVMe, Translucent Chassis")
-                            .image("/images/images (4).jpg")
-                            .badge("VALUE")
-                            .stock(15)
-                            .rating(4.5)
-                            .reviewCount(28)
-                            .build()
-            );
-
-            productRepository.saveAll(seedProducts);
-            System.out.println("✅ Successfully seeded " + seedProducts.size() + " products into PostgreSQL!");
+        // 2. Seed products from products.json
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/products.json");
+            if (inputStream != null) {
+                List<Product> products = objectMapper.readValue(inputStream, new TypeReference<List<Product>>() {});
+                int addedCount = 0;
+                for (Product p : products) {
+                    if (!productRepository.existsByItemCode(p.getItemCode())) {
+                        productRepository.save(p);
+                        addedCount++;
+                    }
+                }
+                if (addedCount > 0) {
+                    log.info("Successfully seeded {} new products into PostgreSQL! Total inventory: {}", 
+                            addedCount, productRepository.count());
+                } else {
+                    log.info("PostgreSQL inventory is already up to date with {} products.", productRepository.count());
+                }
+            } else {
+                log.warn("products.json resource file not found on classpath.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to seed products from JSON: {}", e.getMessage(), e);
         }
     }
 }
