@@ -22,6 +22,17 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
+    /**
+     * @Transactional: "All or Nothing" Database Guarantee (Rollback)
+     *
+     * How it works:
+     * 1. Spring opens a database transaction block (BEGIN) in PostgreSQL.
+     * 2. If all steps succeed, PostgreSQL commits the changes permanently (COMMIT).
+     * 3. If ANY step fails (e.g. token generation crashes, or an unhandled exception occurs),
+     *    Spring tells PostgreSQL to ROLLBACK.
+     *    PostgreSQL erases the newly inserted user row as if it never happened,
+     *    preventing the database from being left in a broken, half-saved state.
+     */
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         // STEP 1: Duplicate Email Check (PostgreSQL existence query)
@@ -87,6 +98,14 @@ public class AuthService {
         return mapToDto(user);
     }
 
+    /**
+     * Converts internal User Entity -> public UserDto
+     *
+     * SECURITY REASON:
+     * - User.java contains the hashed password from the database.
+     * - UserDto.java intentionally excludes the password field.
+     * - By mapping to UserDto, we ensure passwords are NEVER returned to the browser/frontend.
+     */
     public UserDto mapToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
