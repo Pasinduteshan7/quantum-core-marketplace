@@ -43,3 +43,7 @@ Thumbs.db
 # TypeScript Cache
 *.tsbuildinfo
 next-env.d.ts
+
+# Scratch & Recovery Logs
+recovered_chats/
+Full_stack_admin_panel/

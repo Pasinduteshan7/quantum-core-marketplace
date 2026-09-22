@@ -29,6 +29,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Real-Time WebSockets (STOMP messaging for Customer-Admin live chat) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- Validation (Bean Validation annotations like @NotBlank, @Email, @Min) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +96,17 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Stripe Payment Gateway SDK
+             This is the official Java library from Stripe (stripe.com).
+             It provides classes like PaymentIntent, Webhook, etc. that let our
+             Spring Boot backend communicate with Stripe's payment servers.
+             We NEVER handle raw card numbers — Stripe does that for us. -->
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>28.2.0</version>
         </dependency>
     </dependencies>
 
