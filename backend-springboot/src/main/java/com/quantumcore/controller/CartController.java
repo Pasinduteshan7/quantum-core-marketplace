@@ -33,6 +33,7 @@ public class CartController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody AddToCartRequest request
     ) {
+        // 🛒 CART FLOW STEP 3: Spring Boot receives the POST request here and hands it to the CartService!
         CartItemDto item = cartService.addToCart(userDetails.getUsername(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
