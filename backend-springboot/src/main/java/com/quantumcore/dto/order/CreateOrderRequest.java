@@ -18,4 +18,7 @@ public class CreateOrderRequest {
 
     @NotBlank(message = "Payment method is required")
     private String paymentMethod; // COD, CARD, BANK_TRANSFER
+
+    // Optional list of specific CartItem IDs to checkout (for partial checkout)
+    private java.util.List<Long> cartItemIds;
 }

@@ -19,4 +19,9 @@ public class OrderDto {
     private Double totalAmount;
     private String status;
     private LocalDateTime createdAt;
+
+    // Admin-only fields: when a regular customer views their own orders, these are null.
+    // When an admin views the order queue, mapToAdminDto fills these in so they know who ordered.
+    private String customerName;
+    private String customerEmail;
 }

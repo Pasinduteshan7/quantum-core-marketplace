@@ -25,6 +25,7 @@ public class OrderController {
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody CreateOrderRequest request
     ) {
+        // 📦 ORDER FLOW STEP 3: Spring Boot receives the HTTP POST request. Unwraps JSON and hands to OrderService.
         OrderDto order = orderService.createOrderFromCart(userDetails.getUsername(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
