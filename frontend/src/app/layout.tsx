@@ -4,6 +4,7 @@ import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
+import { CustomerChatWidget } from '../components/chat/CustomerChatWidget';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -17,14 +18,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
             <Toaster position="top-right" />
             <Header />
             <main>{children}</main>
             <Footer />
+            <CustomerChatWidget />
           </CartProvider>
         </AuthProvider>
       </body>
