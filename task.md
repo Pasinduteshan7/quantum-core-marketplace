@@ -21,24 +21,24 @@
 ## 🔵 Block 2: Backend #1 — Spring Boot + PostgreSQL (Next Up!)
 
 ### Week 5: Spring Boot Setup + Docker
-- [ ] Connect Spring Boot to PostgreSQL (`application.yml` + Docker Compose)
-- [ ] Create `User` entity, `UserRepository`, and `BCryptPasswordEncoder`
-- [ ] Build `/api/auth/register` and `/api/auth/login` with JWT tokens
-- [ ] Build `/api/auth/me` protected endpoint
+- [x] Connect Spring Boot to PostgreSQL (`application.yml` + Docker Compose)
+- [x] Create `User` entity, `UserRepository`, and `BCryptPasswordEncoder`
+- [x] Build `/api/auth/register` and `/api/auth/login` with JWT tokens
+- [x] Build `/api/auth/me` protected endpoint
 
 ### Week 6: Product Catalog & Image Upload
-- [ ] Create `Product` and `Category` entities
-- [ ] Build `GET /api/products` (pagination, category, brand, search filtering)
-- [ ] Build `GET /api/products/{id}`
-- [ ] Build `POST /api/products` (Admin CRUD)
-- [ ] Seed database with initial Quantum Core products
+- [x] Create `Product` and `Category` entities
+- [x] Build `GET /api/products` (pagination, category, brand, search filtering)
+- [x] Build `GET /api/products/{id}`
+- [x] Build `POST /api/products` (Admin CRUD)
+- [x] Seed database with initial Quantum Core products
 
 ### Week 7: Shopping Cart & Order Checkout
-- [ ] Create `CartItem` entity (tied to authenticated `User`)
-- [ ] Build `GET /api/cart`, `POST /api/cart`, `PUT /api/cart/{id}`, `DELETE /api/cart/{id}`
-- [ ] Create `Order` and `OrderItem` entities
-- [ ] Build `POST /api/orders` (atomic transaction: validate cart, deduct stock, create order)
-- [ ] Build `GET /api/orders` (user order history)
+- [x] Create `CartItem` entity (tied to authenticated `User`)
+- [x] Build `GET /api/cart`, `POST /api/cart`, `PUT /api/cart/{id}`, `DELETE /api/cart/{id}`
+- [x] Create `Order` and `OrderItem` entities
+- [x] Build `POST /api/orders` (atomic transaction: validate cart, deduct stock, create order)
+- [x] Build `GET /api/orders` (user order history)
 
 ### Week 8: Testing & Docker Compose
 - [ ] JUnit 5 unit & integration tests for Auth and Cart/Order flows
@@ -47,13 +47,14 @@
 
 ---
 
-## 🟡 Block 3: Backend #2 — Node.js/Express + MongoDB
+## 🟡 Block 3: Backend #2 — Node.js/Express + MongoDB (BUILT & ARCHITECTED ✅)
 
-- [ ] Setup Express server with TypeScript & Mongoose
-- [ ] Build Auth routes (JWT, bcrypt) matching API contract
-- [ ] Build Product & Category routes
-- [ ] Build Cart & Order routes with user isolation
-- [ ] Test frontend switching to `npm run dev:node` (:5000)
+- [x] Setup Express server with Mongoose & Connection Pooling
+- [x] Build Auth routes (JWT, BCrypt pre-save hooks) matching Spring Boot API contract
+- [x] Build Product catalog with faceted filtering, text search, and SKU lookups
+- [x] Build Cart & Order routes with Anti-IDOR user isolation & price snapshotting
+- [x] Database seeder for default accounts and catalog synchronization
+- [ ] Test frontend switching to `node` backend (:5000) and verify live Mongo persistence
 
 ---
 
