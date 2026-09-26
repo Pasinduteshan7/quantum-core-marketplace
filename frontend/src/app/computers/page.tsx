@@ -1,11 +1,44 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
+import api from "../../services/api";
+import { MessageSquare } from "lucide-react";
 
 const Computers = () => {
   const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [liveProducts, setLiveProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLiveProducts = async () => {
+      try {
+        const res = await api.get('/products');
+        if (res.data && res.data.length > 0) {
+          const compAndAcc = res.data.filter((p: any) => 
+            p.category === 'Computers' || 
+            (p.category === 'Accessories' && ![
+              'Laptop Bags', 'Bags', 
+              'Laptop Chargers', 'Chargers', 
+              'Cooling Pads', 'CoolingPads', 
+              'Laptop Stands', 'Stands'
+            ].includes(p.subCategory))
+          );
+          if (compAndAcc.length > 0) {
+            const mapped = compAndAcc.map((p: any) => ({
+              ...p,
+              category: p.subCategory || p.category
+            }));
+            setLiveProducts(mapped);
+          }
+        }
+      } catch (err) {
+        console.warn('Backend unavailable, using fallback catalog');
+      }
+    };
+    fetchLiveProducts();
+  }, []);
+
   const computers = [
    
      {
@@ -311,13 +344,20 @@ const Computers = () => {
    
   ];
 
-  const allProducts = [...computers, ...accessories];
+  const formatPrice = (price: any) => {
+    if (typeof price === "number") {
+      return "LKR " + price.toLocaleString();
+    }
+    return String(price || "");
+  };
+
+  const allProducts = liveProducts.length > 0 ? liveProducts : [...computers, ...accessories];
 
   const categories = [
-    "All", "Gaming", "Workstation", "Business",
-    "All-in-One", "Mini PC", "Budget", "Server",
+    "All", "Gaming", "Workstation", "Business", "Server",
     "Monitors", "Keyboards", "Mice", "Audio",
-    "Components", "Streaming"
+    "Components", "Webcams", "Printers", "Networking",
+    "UPS & Power", "Cables & Adapters", "Graphics Tablets"
   ];
 
   const filteredProducts = selectedCategory === "All"
@@ -356,19 +396,48 @@ const Computers = () => {
                 <h3 className="product-name">{product.name}</h3>
                 <p className="specs">{product.specs}</p>
                 {product.originalPrice && (
-                  <p className="original-price">{product.originalPrice}</p>
+                  <p className="original-price">{formatPrice(product.originalPrice)}</p>
                 )}
-                <p className="price">{product.price}</p>
+                <p className="price">{formatPrice(product.price)}</p>
                 <p className="item-code">
                   <strong>Item Code:</strong> {product.itemCode}
                 </p>
               </div>
-              <button
-                className="Addtocart-btn"
-                onClick={() => addToCart(product)}
-              >
-                Add to Cart
-              </button>
+              <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
+                <button
+                  className="Addtocart-btn"
+                  onClick={() => addToCart(product)}
+                  style={{ flex: 1, marginTop: 0 }}
+                >
+                  Add to Cart
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new CustomEvent('open-store-chat', { detail: product }));
+                    }
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '4px',
+                    padding: '8px 12px',
+                    background: '#0f172a',
+                    color: '#38bdf8',
+                    border: '1px solid #334155',
+                    borderRadius: '2px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                  title="Ask store owner about this product"
+                >
+                  <MessageSquare size={14} />
+                  <span>Ask</span>
+                </button>
+              </div>
             </div>
           ))}
         </div>

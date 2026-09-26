@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
+import api from '../services/api';
+import { MessageSquare } from 'lucide-react';
 
 const Button = ({ children, className = '', ...rest }: any) => (
   <button className={`btn ${className}`} {...rest}>{children}</button>
@@ -19,6 +21,21 @@ const CardContent = ({ children, className = '' }: any) => (
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { addToCart } = useCart();
+  const [liveLatest, setLiveLatest] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLatest = async () => {
+      try {
+        const res = await api.get('/products');
+        if (res.data && res.data.length > 0) {
+          setLiveLatest(res.data.slice(0, 8));
+        }
+      } catch (err) {
+        console.warn('Backend unavailable, using fallback latest products');
+      }
+    };
+    fetchLatest();
+  }, []);
 
   const heroSlides = [
     { image: '/images/GAMING LAPTOPS.png' },
@@ -110,6 +127,15 @@ export default function Home() {
     }
   ];
 
+  const formatPrice = (price: any) => {
+    if (typeof price === 'number') {
+      return 'LKR ' + price.toLocaleString();
+    }
+    return String(price || '');
+  };
+
+  const displayProducts = liveLatest.length > 0 ? liveLatest : latestProducts;
+
   return (
     <div className="home-root">
       {/* Hero Carousel */}
@@ -180,7 +206,7 @@ export default function Home() {
           <p>BEST - LOWEST PRICE FOR ALL PRODUCTS</p>
         </div>
         <div className="products-grid">
-          {latestProducts.map((p) => (
+          {displayProducts.map((p) => (
             <Card key={p.id} className="product-card">
               <CardContent>
                 <img src={p.image} alt={p.name} className="product-img" />
@@ -188,15 +214,43 @@ export default function Home() {
                   <span className="product-brand">{p.brand}</span>
                   <h3 className="product-title">{p.name}</h3>
                   <p className="product-specs">{p.specs}</p>
-                  <span className="product-old">{p.originalPrice}</span>
-                  <span className="product-new">{p.price}</span>
-                  <button
-                    onClick={() => addToCart(p)}
-                    className="Addtocart-btn"
-                    style={{ marginTop: '8px', borderRadius: '4px' }}
-                  >
-                    Add to Cart
-                  </button>
+                  {p.originalPrice && <span className="product-old">{formatPrice(p.originalPrice)}</span>}
+                  <span className="product-new">{formatPrice(p.price)}</span>
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
+                    <button
+                      onClick={() => addToCart(p)}
+                      className="Addtocart-btn"
+                      style={{ flex: 1, marginTop: 0, borderRadius: '4px' }}
+                    >
+                      Add to Cart
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.dispatchEvent(new CustomEvent('open-store-chat', { detail: p }));
+                        }
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px',
+                        padding: '8px 12px',
+                        background: '#0f172a',
+                        color: '#38bdf8',
+                        border: '1px solid #334155',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                      title="Ask store owner about this product"
+                    >
+                      <MessageSquare size={14} />
+                      <span>Ask</span>
+                    </button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

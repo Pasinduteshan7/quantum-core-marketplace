@@ -1,7 +1,17 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export const Footer = () => {
+  const pathname = usePathname();
+
+  // Isolate Admin pages: Never show customer footer inside /admin
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="bg-black text-white py-10 px-4">
       <div className="max-w-6xl mx-auto grid-footer">

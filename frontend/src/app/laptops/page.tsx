@@ -1,12 +1,51 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
+import api from "../../services/api";
+import { MessageSquare } from "lucide-react";
 
 const Laptop = () => {
     const { addToCart } = useCart();
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedBrand, setSelectedBrand] = useState("All");
+    const [liveProducts, setLiveProducts] = useState<any[]>([]);
+
+    useEffect(() => {
+      const fetchLiveProducts = async () => {
+        try {
+          const res = await api.get('/products');
+          if (res.data && res.data.length > 0) {
+            const laptopAndAcc = res.data.filter((p: any) => 
+              p.category === 'Laptops' || 
+              (p.category === 'Accessories' && [
+                'Laptop Bags', 'Bags', 
+                'Laptop Chargers', 'Chargers', 
+                'Cooling Pads', 'CoolingPads', 
+                'Laptop Stands', 'Stands'
+              ].includes(p.subCategory))
+            );
+            if (laptopAndAcc.length > 0) {
+              const mapped = laptopAndAcc.map((p: any) => {
+                let cat = p.subCategory || p.category;
+                if (cat === 'Laptop Bags') cat = 'Bags';
+                if (cat === 'Laptop Chargers') cat = 'Chargers';
+                if (cat === 'Cooling Pads') cat = 'CoolingPads';
+                if (cat === 'Laptop Stands') cat = 'Stands';
+                return {
+                  ...p,
+                  category: cat
+                };
+              });
+              setLiveProducts(mapped);
+            }
+          }
+        } catch (err) {
+          console.warn('Backend unavailable, using fallback catalog');
+        }
+      };
+      fetchLiveProducts();
+    }, []);
 
   // ===== COMPREHENSIVE HIERARCHICAL CATEGORY-BRAND MAPPING =====
   const categoryHierarchy = {
@@ -569,10 +608,9 @@ const Laptop = () => {
 
   // Filter products (laptops and accessories)
   const filteredLaptops = (() => {
-    const isAccessoryCategory = Object.keys(categoryHierarchy.accessories).includes(selectedCategory);
-    const productsToFilter = isAccessoryCategory ? accessories : laptops;
+    const productsToFilter = liveProducts.length > 0 ? liveProducts : laptops;
     
-    return productsToFilter.filter((product) => {
+    return productsToFilter.filter((product: any) => {
       const categoryMatch = selectedCategory === "All" || product.category === selectedCategory;
       const brandMatch = selectedBrand === "All" || product.brand === selectedBrand;
       return categoryMatch && brandMatch;
@@ -645,12 +683,41 @@ const Laptop = () => {
                   <p className="price">{formatPrice(product.price)}</p>
                   <p className="item-code">Item Code: {product.itemCode}</p>
                 </div>
-                <button
-                  onClick={() => addToCart(product)}
-                  className="Addtocart-btn"
-                >
-                  Add to Cart
-                </button>
+                <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
+                  <button
+                    onClick={() => addToCart(product)}
+                    className="Addtocart-btn"
+                    style={{ flex: 1, marginTop: 0 }}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        window.dispatchEvent(new CustomEvent('open-store-chat', { detail: product }));
+                      }
+                    }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      padding: '8px 12px',
+                      background: '#0f172a',
+                      color: '#38bdf8',
+                      border: '1px solid #334155',
+                      borderRadius: '2px',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                    title="Ask store owner about this product"
+                  >
+                    <MessageSquare size={14} />
+                    <span>Ask</span>
+                  </button>
+                </div>
               </div>
             ))
           ) : (
