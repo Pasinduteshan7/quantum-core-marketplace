@@ -52,30 +52,46 @@ for /f "tokens=*" %%i in ('java -version 2^>^&1') do (
 :java_done
 echo   [OK] Java detected: %JAVA_VER%
 
-:: 3. Database Reminders
-echo   [INFO] Ensure PostgreSQL is running on port 5433 with database 'quantumcore_db'
-echo   [INFO] Ensure MongoDB is running on port 27017 with database 'quantumcore_db'
+:: 3. Check Go
+where go >nul 2>nul
+if %ERRORLEVEL% equ 0 (
+    for /f "tokens=*" %%i in ('go version') do set "GO_VER=%%i"
+    echo   [OK] Go detected: !GO_VER!
+) else (
+    echo   [WARN] Go not detected in PATH.
+)
+
+:: 4. Database Reminders
+echo   [INFO] PostgreSQL: port 5433 (database 'quantumcore_db')
+echo   [INFO] MongoDB:    port 27017 (database 'quantumcore_db')
+echo   [INFO] MySQL 8:    port 3306 (database 'quantumcore_db')
 
 echo.
-echo [2/5] Starting Spring Boot Backend (Port 8080)...
+echo [2/6] Starting Spring Boot Backend (Port 8080)...
 echo ------------------------------------------------------------------------
 start "Quantum Core - Backend (Spring Boot:8080)" cmd.exe /k "cd /d "%ROOT_DIR%backend-springboot" && color 0A && echo Starting Spring Boot Backend on http://localhost:8080... && mvnw.cmd spring-boot:run"
 echo   [OK] Spring Boot process spawned in separate window.
 
 echo.
-echo [3/5] Starting Node.js Backend (Port 5000)...
+echo [3/6] Starting Node.js Backend (Port 5000)...
 echo ------------------------------------------------------------------------
 start "Quantum Core - Backend (Node.js:5000)" cmd.exe /k "cd /d "%ROOT_DIR%backend-node" && color 0E && echo Starting Node.js Backend on http://localhost:5000... && npm run dev"
 echo   [OK] Node.js process spawned in separate window.
 
 echo.
-echo [4/5] Starting Next.js Frontend (Port 3000)...
+echo [4/6] Starting Go Gin Backend (Port 8081)...
+echo ------------------------------------------------------------------------
+start "Quantum Core - Backend (Go:8081)" cmd.exe /k "cd /d "%ROOT_DIR%backend-go" && color 0D && echo Starting Go Gin Backend on http://localhost:8081... && .\quantum-core-backend-go.exe"
+echo   [OK] Go Gin process spawned in separate window.
+
+echo.
+echo [5/6] Starting Next.js Frontend (Port 3000)...
 echo ------------------------------------------------------------------------
 start "Quantum Core - Frontend (Next.js:3000)" cmd.exe /k "cd /d "%ROOT_DIR%frontend" && color 09 && echo Starting Next.js Frontend on http://localhost:3000... && npm run dev"
 echo   [OK] Frontend process spawned in separate window.
 
 echo.
-echo [5/5] Opening Web Application...
+echo [6/6] Opening Web Application...
 echo ------------------------------------------------------------------------
 echo   Waiting 5 seconds for dev servers to initialize...
 timeout /t 5 /nobreak >nul
@@ -84,17 +100,17 @@ start http://localhost:3000
 
 echo.
 echo ========================================================================
-echo   SYSTEM READY!
+echo   SYSTEM READY - TRI-BACKEND RUNNING!
 echo ========================================================================
 echo   - Customer Store:     http://localhost:3000
 echo   - Admin Console:      http://localhost:3000/admin
 echo   - Live Inquiries:     http://localhost:3000/admin/inquiries
-echo   - Spring Boot API:    http://localhost:8080/api
-echo   - Node.js API:        http://localhost:5000/api
+echo   - Spring Boot API:    http://localhost:8080/api  (PostgreSQL)
+echo   - Node.js API:        http://localhost:5000/api  (MongoDB)
+echo   - Go Gin API:         http://localhost:8081/api  (MySQL 8)
 echo   - WebSocket Channel:  ws://localhost:8080/ws
 echo.
-echo   To stop the servers, simply close the spawned terminal windows,
-echo   or run 'stop.bat'.
+echo   To stop the servers, run 'stop.bat'.
 echo ========================================================================
 echo.
 pause

@@ -24,12 +24,20 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Go Build Outputs & Binaries
+**/*.exe
+**/*.exe~
+backend-go/quantum-core-backend-go
+backend-go/quantum-core-backend-go.exe
+
 # Environment Variables & Secrets
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+!.env.example
+!**/.env.example
 
 # IDE & OS Files
 .idea/

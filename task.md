@@ -63,12 +63,14 @@
 
 ---
 
-## 🟠 Block 4: Backend #3 — Go/Gin + MySQL
+## 🟠 Block 4: Backend #3 — Go/Gin + MySQL (BUILT & TESTED ✅)
 
-- [ ] Setup Go project with Gin framework and GORM
-- [ ] Connect Go to MySQL
-- [ ] Implement Auth, Product, Cart, and Order endpoints matching API contract
-- [ ] Test frontend switching to `npm run dev:go` (:8081)
+- [x] Setup Go project with Gin framework, GORM, and connection pooling
+- [x] Connect Go to MySQL 8 (InnoDB Engine) with AutoMigration
+- [x] Implement Auth, Product, Cart, Order, Admin, and Payment endpoints matching API contract
+- [x] Auto-seed 293 hardware products, default admin, and customer accounts
+- [x] Atomic inventory stock validation & decrement within database transactions
+- [x] Integrated into Tri-Backend launcher (start.bat) and shutdown script (stop.bat)
 
 ---
 
