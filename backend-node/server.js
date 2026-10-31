@@ -85,6 +85,9 @@ app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/products', require('./src/routes/productRoutes'));
 app.use('/api/cart', require('./src/routes/cartRoutes'));
 app.use('/api/orders', require('./src/routes/orderRoutes'));
+app.use('/api/admin', require('./src/routes/adminRoutes'));
+app.use('/api/payments', require('./src/routes/paymentRoutes'));
+app.use('/api/chat', require('./src/routes/chatRoutes'));
 
 // ════════════════════════════════════════════════════════════════════════════════
 // 🛡️ ERROR HANDLING PIPELINE (The Safety Net)
