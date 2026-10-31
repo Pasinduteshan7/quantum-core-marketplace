@@ -48,3 +48,8 @@ next-env.d.ts
 recovered_chats/
 Full_stack_admin_panel/
 SPRINGBOOT_ARCHITECTURE_THEORY.md
+
+# Archives & Large Binaries
+*.zip
+*.tar.gz
+*.rar
