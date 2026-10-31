@@ -53,7 +53,12 @@
 - [x] Build Auth routes (JWT, BCrypt pre-save hooks) matching Spring Boot API contract
 - [x] Build Product catalog with faceted filtering, text search, and SKU lookups
 - [x] Build Cart & Order routes with Anti-IDOR user isolation & price snapshotting
+- [x] Build Admin back-office suite (/api/admin/stats, /api/admin/products CRUD, /api/admin/orders, /api/admin/users)
+- [x] Stripe Payment Gateway integration (/api/payments/create-intent, /api/payments/confirm, webhook handler)
+- [x] Inventory stock validation & atomic stock decrement on order checkout
+- [x] Customer Support Inquiries & Chat REST endpoints (/api/chat/*)
 - [x] Database seeder for default accounts and catalog synchronization
+- [x] Tri-backend launcher & shutdown scripts (start.bat & stop.bat)
 - [ ] Test frontend switching to `node` backend (:5000) and verify live Mongo persistence
 
 ---
