@@ -249,6 +249,7 @@ export const MOCK_PRODUCTS: Product[] = [
 
 export const CATEGORIES = [
   { name: 'All', slug: 'all' },
+  { name: 'iPhones', slug: 'iphones', image: '/images/iphone/apple-iphone-16-pro-max-256gb/01.png' },
   { name: 'Laptops', slug: 'laptops', image: '/images/GAMING LAPTOPS.png' },
   { name: 'Computers', slug: 'computers', image: '/images/WORKSTATION AND GAMING DESKTOP.png' },
   { name: 'Accessories', slug: 'accessories', image: '/images/LAPTOP ACCESORIES copy.png' }

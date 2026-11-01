@@ -111,6 +111,9 @@ export const Header = () => {
             <Link href="/computers" className={isActive('/computers') ? 'active-footer' : ''}>
               DESKTOP & ACCESSORIES
             </Link>
+            <Link href="/iphones" className={isActive('/iphones') ? 'active-footer' : ''}>
+              IPHONES & APPLE
+            </Link>
             {isAuthenticated ? (
               <>
                 <Link href="/orders" className={isActive('/orders') ? 'active-footer' : ''}>

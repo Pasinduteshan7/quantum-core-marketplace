@@ -27,8 +27,9 @@ export default function Home() {
     const fetchLatest = async () => {
       try {
         const res = await api.get('/products');
-        if (res.data && res.data.length > 0) {
-          setLiveLatest(res.data.slice(0, 8));
+        const items = Array.isArray(res.data) ? res.data : (res.data?.products || []);
+        if (items.length > 0) {
+          setLiveLatest(items.slice(0, 8));
         }
       } catch (err) {
         console.warn('Backend unavailable, using fallback latest products');
@@ -55,6 +56,7 @@ export default function Home() {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   const productCategories = [
+    { image: '/images/iphone/apple-iphone-16-pro-max-256gb/01.png', link: '/iphones' },
     { image: '/images/Screenshot 2025-06-27 000153.png', link: '/laptops' },
     { image: '/images/LAPTOP ACCESORIES copy.png', link: '/laptops' },
     { image: '/images/DESKTOP AND ACCESORIES copy.png', link: '/computers' },
