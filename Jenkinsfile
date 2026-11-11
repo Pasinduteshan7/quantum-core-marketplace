@@ -17,6 +17,10 @@ pipeline {
 
         // ─── STAGE 2: Build Spring Boot Backend ─────────────────────────────
         stage('Build Backend') {
+            environment {
+                JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
+                PATH = "/usr/lib/jvm/java-21-openjdk-amd64/bin:${env.PATH}"
+            }
             steps {
                 echo '☕ Packaging Spring Boot 3 (Java 21) JAR...'
                 dir('backend-springboot') {
