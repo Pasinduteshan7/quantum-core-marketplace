@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // API URL is read from NEXT_PUBLIC_API_URL environment variable
-  // No rewrites needed — the frontend calls the backend directly
+  // Standalone output for Docker production deployment
+  output: "standalone",
 
   // Enable React strict mode for development
   reactStrictMode: true,
