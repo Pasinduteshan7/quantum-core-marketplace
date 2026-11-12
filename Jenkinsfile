@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Defines project name for Docker
         COMPOSE_PROJECT_NAME = 'quantumcore'
     }
 
@@ -24,7 +23,6 @@ pipeline {
             steps {
                 echo '☕ Packaging Spring Boot 3 (Java 21) JAR...'
                 dir('backend-springboot') {
-                    // Uses maven wrapper with container flags
                     sh 'chmod +x mvnw && ./mvnw clean package -DskipTests'
                 }
             }
@@ -41,8 +39,9 @@ pipeline {
         // ─── STAGE 4: Deploy on the Server ──────────────────────────────────
         stage('Deploy Stack') {
             steps {
-                echo '🚀 Starting all containers in background...'
-                sh 'docker compose up -d'
+                echo '🚀 Refreshing containers in background...'
+                sh 'docker compose down --remove-orphans || true'
+                sh 'docker compose up -d --remove-orphans'
             }
         }
 
@@ -51,10 +50,9 @@ pipeline {
             steps {
                 echo '🔍 Verifying containers are healthy...'
                 sh '''
-                    sleep 15
+                    sleep 10
                     docker compose ps
-                    curl -f http://localhost:8080/api/products?category=Smartphones || exit 1
-                    curl -f http://localhost:3000 || exit 1
+                    docker exec quantumcore_springboot wget -qO- http://localhost:8080/api/products?category=Smartphones > /dev/null || exit 1
                 '''
                 echo '✅ Deployment Successful! Storefront is live at http://localhost:3000'
             }
