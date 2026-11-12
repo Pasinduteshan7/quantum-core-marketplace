@@ -40,7 +40,7 @@ pipeline {
         stage('Deploy Stack') {
             steps {
                 echo '🚀 Refreshing containers in background...'
-                sh 'docker compose down --remove-orphans || true'
+                sh 'docker rm -f quantumcore_postgres quantumcore_springboot quantumcore_frontend || true'
                 sh 'docker compose up -d --remove-orphans'
             }
         }
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 echo '🔍 Verifying containers are healthy...'
                 sh '''
-                    sleep 10
+                    sleep 15
                     docker compose ps
                     docker exec quantumcore_springboot wget -qO- http://localhost:8080/api/products?category=Smartphones > /dev/null || exit 1
                 '''
