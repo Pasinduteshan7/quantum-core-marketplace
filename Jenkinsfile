@@ -60,7 +60,7 @@ pipeline {
                 sh '''
                     # 1. Check PostgreSQL readiness
                     echo "Checking PostgreSQL..."
-                    for i in {1..10}; do
+                    for i in 1 2 3 4 5 6 7 8 9 10; do
                         if docker compose exec -T postgres pg_isready -U postgres > /dev/null 2>&1; then
                             echo "✅ PostgreSQL is healthy!"
                             break
@@ -69,10 +69,13 @@ pipeline {
                         sleep 2
                     done
 
+                    # Initial pause for Spring Boot to bootstrap Hibernate
+                    sleep 10
+
                     # 2. Check Spring Boot API with 12 retries (up to 60s)
                     echo "Checking Spring Boot Backend API..."
                     backend_ok=false
-                    for i in {1..12}; do
+                    for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
                         if docker exec quantumcore_springboot wget -qO- http://localhost:8080/api/products?category=Smartphones > /dev/null 2>&1; then
                             echo "✅ Backend API is healthy & products seeded!"
                             backend_ok=true
